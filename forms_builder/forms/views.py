@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import json
+from urllib.parse import quote
 
 from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -10,9 +11,8 @@ except ImportError:
     # For Django 1.8 compatibility
     from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, redirect, render_to_response
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template import RequestContext
-from django.utils.http import urlquote
 from django.views.generic.base import TemplateView
 from email_extras.utils import send_mail_template
 
@@ -37,7 +37,7 @@ class FormDetail(TemplateView):
         context = self.get_context_data(**kwargs)
         login_required = context["form"].login_required
         if login_required and not request.user.is_authenticated:
-            path = urlquote(request.get_full_path())
+            path = quote(request.get_full_path())
             bits = (settings.LOGIN_URL, REDIRECT_FIELD_NAME, path)
             return redirect("%s?%s=%s" % bits)
         return self.render_to_response(context)
@@ -60,6 +60,8 @@ class FormDetail(TemplateView):
             entry = form_for_form.save()
             form_valid.send(sender=request, form=form_for_form, entry=entry)
             self.send_emails(request, form_for_form, form, entry, attachments)
+            # XXX: is_ajax() is deprecated since Django 3.1, removed in Django 4.0
+            # https://docs.djangoproject.com/en/3.1/releases/3.1/#id2
             if not self.request.is_ajax():
                 return redirect(form.redirect_url or
                     reverse("form_sent", kwargs={"slug": form.slug}))
@@ -67,6 +69,8 @@ class FormDetail(TemplateView):
         return self.render_to_response(context)
 
     def render_to_response(self, context, **kwargs):
+        # XXX: is_ajax() is deprecated since Django 3.1, removed in Django 4.0
+        # https://docs.djangoproject.com/en/3.1/releases/3.1/#id2
         if self.request.method == "POST" and self.request.is_ajax():
             json_context = json.dumps({
                 "errors": context["form_for_form"].errors,
@@ -120,4 +124,4 @@ def form_sent(request, slug, template="forms/form_sent.html"):
     """
     published = Form.objects.published(for_user=request.user)
     context = {"form": get_object_or_404(published, slug=slug)}
-    return render_to_response(template, context, RequestContext(request))
+    return render(request, template, context, RequestContext(request))

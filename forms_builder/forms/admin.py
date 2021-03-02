@@ -18,7 +18,7 @@ except ImportError:
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.utils.translation import ungettext, ugettext_lazy as _
+from django.utils.translation import ngettext, gettext_lazy as _
 
 from forms_builder.forms.forms import EntriesForm
 from forms_builder.forms.models import Form, Field, FormEntry, FieldEntry
@@ -88,16 +88,16 @@ class FormAdmin(admin.ModelAdmin):
         """
         urls = super(FormAdmin, self).get_urls()
         extra_urls = [
-            re_path("^(?P<form_id>\d+)/entries/$",
+            re_path(r"^(?P<form_id>\d+)/entries/$",
                 self.admin_site.admin_view(self.entries_view),
                 name="form_entries"),
-            re_path("^(?P<form_id>\d+)/entries/show/$",
+            re_path(r"^(?P<form_id>\d+)/entries/show/$",
                 self.admin_site.admin_view(self.entries_view),
                 {"show": True}, name="form_entries_show"),
-            re_path("^(?P<form_id>\d+)/entries/export/$",
+            re_path(r"^(?P<form_id>\d+)/entries/export/$",
                 self.admin_site.admin_view(self.entries_view),
                 {"export": True}, name="form_entries_export"),
-            re_path("^file/(?P<field_entry_id>\d+)/$",
+            re_path(r"^file/(?P<field_entry_id>\d+)/$",
                 self.admin_site.admin_view(self.file_view),
                 name="form_file"),
         ]
@@ -177,8 +177,8 @@ class FormAdmin(admin.ModelAdmin):
                     count = entries.count()
                     if count > 0:
                         entries.delete()
-                        message = ungettext("1 entry deleted",
-                                            "%(count)s entries deleted", count)
+                        message = ngettext("1 entry deleted",
+                                           "%(count)s entries deleted", count)
                         info(request, message % {"count": count})
         template = "admin/forms/entries.html"
         context = {"title": _("View Entries"), "entries_form": entries_form,
