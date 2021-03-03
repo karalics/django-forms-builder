@@ -1,7 +1,10 @@
 from __future__ import unicode_literals
 
+from django.core.mail import EmailMultiAlternatives
 from django.template.defaultfilters import slugify as django_slugify
 from importlib import import_module
+
+from django.template.loader import render_to_string
 from unidecode import unidecode
 
 
@@ -65,3 +68,25 @@ def import_attr(path):
     """
     module_path, attr_name = path.rsplit(".", 1)
     return getattr(import_module(module_path), attr_name)
+
+
+def send_mail_template(subject, template, from_email, recipient_list,
+                       fail_silently=False, attachments=None, context=None,
+                       connection=None, headers=None):
+    context = context or {}
+    recipient_list = [recipient_list] if isinstance(recipient_list, str) else recipient_list
+
+    body = render_to_string('email_extras/{}.{}'.format(template, 'txt'), context)
+    html_body = render_to_string('email_extras/{}.{}'.format(template, 'html'), context)
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=body,
+        from_email=from_email,
+        to=recipient_list,
+        connection=connection,
+        attachments=attachments,
+        headers=headers,
+    )
+    email.attach_alternative(html_body, 'text/html')
+    email.send(fail_silently)

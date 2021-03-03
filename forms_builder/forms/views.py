@@ -14,13 +14,12 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import RequestContext
 from django.views.generic.base import TemplateView
-from email_extras.utils import send_mail_template
 
 from forms_builder.forms.forms import FormForForm
 from forms_builder.forms.models import Form
 from forms_builder.forms.settings import EMAIL_FAIL_SILENTLY
 from forms_builder.forms.signals import form_invalid, form_valid
-from forms_builder.forms.utils import split_choices
+from forms_builder.forms.utils import split_choices, send_mail_template
 
 
 class FormDetail(TemplateView):
@@ -56,7 +55,7 @@ class FormDetail(TemplateView):
             attachments = []
             for f in form_for_form.files.values():
                 f.seek(0)
-                attachments.append((f.name, f.read()))
+                attachments.append((f.name, f.read(), f.content_type))
             entry = form_for_form.save()
             form_valid.send(sender=request, form=form_for_form, entry=entry)
             self.send_emails(request, form_for_form, form, entry, attachments)
