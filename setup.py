@@ -49,7 +49,7 @@ try:
         install_requires = [
             "sphinx-me >= 0.1.2",
             "unidecode",
-            "django >= 1.11, < 3.1.99",
+            "django >= 1.11, < 3.2.99",
             "future <= 0.15.0",
         ],
         classifiers = [
