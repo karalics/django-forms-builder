@@ -1,5 +1,4 @@
-.. image:: https://secure.travis-ci.org/stephenmcd/django-forms-builder.png?branch=master
-   :target: http://travis-ci.org/stephenmcd/django-forms-builder
+|Project continuation|
 
 django-forms-builder
 ====================
@@ -315,3 +314,6 @@ by installing the `xlwt`_ package:
 .. _`django-email-extras`: https://github.com/stephenmcd/django-email-extras
 .. _`PGP`: http://en.wikipedia.org/wiki/Pretty_Good_Privacy
 .. _`xlwt`: http://www.python-excel.org/
+.. |Project continuation| image:: https://img.shields.io/badge/Continuation-Django_Forms_Builder-blue
+    :target: https://github.com/CZ-NIC/django-forms-builder
+    :alt: Continuation of the unmaintained project "Django Forms builder"
