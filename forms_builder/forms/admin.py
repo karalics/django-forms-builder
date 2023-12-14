@@ -8,15 +8,10 @@ from io import BytesIO, StringIO
 
 from django.contrib import admin
 from django.core.files.storage import FileSystemStorage
-try:
-    from django.urls import reverse, re_path
-except ImportError:
-    # For django 1.8 compatiblity
-    from django.conf.urls import url as re_path
-    from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
+from django.urls import path, reverse
 from django.utils.translation import ngettext, gettext_lazy as _
 
 from forms_builder.forms.forms import EntriesForm
@@ -87,18 +82,12 @@ class FormAdmin(admin.ModelAdmin):
         """
         urls = super().get_urls()
         extra_urls = [
-            re_path(r"^(?P<form_id>\d+)/entries/$",
-                self.admin_site.admin_view(self.entries_view),
-                name="form_entries"),
-            re_path(r"^(?P<form_id>\d+)/entries/show/$",
-                self.admin_site.admin_view(self.entries_view),
-                {"show": True}, name="form_entries_show"),
-            re_path(r"^(?P<form_id>\d+)/entries/export/$",
-                self.admin_site.admin_view(self.entries_view),
-                {"export": True}, name="form_entries_export"),
-            re_path(r"^file/(?P<field_entry_id>\d+)/$",
-                self.admin_site.admin_view(self.file_view),
-                name="form_file"),
+            path("<int:form_id>/entries/", self.admin_site.admin_view(self.entries_view), name="form_entries"),
+            path("<int:form_id>/entries/show/", self.admin_site.admin_view(self.entries_view), {"show": True},
+                 name="form_entries_show"),
+            path("<int:form_id>/entries/export/", self.admin_site.admin_view(self.entries_view), {"export": True},
+                 name="form_entries_export"),
+            path("file/<int:field_entry_id>/", self.admin_site.admin_view(self.file_view), name="form_file"),
         ]
         return extra_urls + urls
 

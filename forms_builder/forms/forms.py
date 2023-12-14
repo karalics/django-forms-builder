@@ -4,20 +4,11 @@ from datetime import date, datetime
 from os.path import join, split
 from uuid import uuid4
 
-import django
 from django import forms
-try:
-    from django.forms import SelectDateWidget
-except ImportError:
-    # For Django 1.8 compatibility
-    from django.forms.extras import SelectDateWidget
 from django.core.files.storage import default_storage
-try:
-    from django.urls import reverse
-except ImportError:
-    # For Django 1.8 compatibility
-    from django.core.urlresolvers import reverse
+from django.forms import SelectDateWidget
 from django.template import Template
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -244,11 +235,7 @@ class FormForForm(forms.ModelForm):
                 new = {"entry": entry, "field_id": field.id, "value": value}
                 new_entry_fields.append(self.field_entry_model(**new))
         if new_entry_fields:
-            if django.VERSION >= (1, 4, 0):
-                self.field_entry_model.objects.bulk_create(new_entry_fields)
-            else:
-                for field_entry in new_entry_fields:
-                    field_entry.save()
+            self.field_entry_model.objects.bulk_create(new_entry_fields)
         return entry
 
     def email_to(self):

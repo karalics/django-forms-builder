@@ -1,21 +1,16 @@
-from django import VERSION as DJANGO_VERSION
 from django.contrib.sites.models import Site
 from django.utils.html import format_html_join
-
-try:
-    from django.urls import reverse
-except ImportError:
-    # For Django 1.8 compatibility
-    from django.core.urlresolvers import reverse
+from django.utils.timezone import now
 
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from future.builtins import str
 
 from forms_builder.forms import fields
 from forms_builder.forms import settings
-from forms_builder.forms.utils import now, slugify, unique_slug
+from forms_builder.forms.utils import slugify, unique_slug
 
 
 STATUS_DRAFT = 1
@@ -121,9 +116,6 @@ class AbstractForm(models.Model):
         publish_date = self.publish_date is None or self.publish_date <= now()
         expiry_date = self.expiry_date is None or self.expiry_date >= now()
         authenticated = for_user is not None and for_user.is_authenticated
-        if DJANGO_VERSION <= (1, 9):
-            # Django 1.8 compatibility, is_authenticated has to be called as a method.
-            authenticated = for_user is not None and for_user.is_authenticated()
         login_required = (not self.login_required or authenticated)
         return status and publish_date and expiry_date and login_required
 
@@ -146,8 +138,6 @@ class AbstractForm(models.Model):
             (_("View all entries"), reverse("admin:form_entries_show", **kw)),
             (_("Export all entries"), reverse("admin:form_entries_export", **kw)),
         ))
-    admin_links.allow_tags = True
-    admin_links.short_description = ""
 
 
 class FieldManager(models.Manager):
