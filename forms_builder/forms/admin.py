@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from future.builtins import bytes, open
 
 from csv import writer
@@ -79,14 +78,14 @@ class FormAdmin(admin.ModelAdmin):
         Annotate the queryset with the entries count for use in the
         admin list view.
         """
-        qs = super(FormAdmin, self).get_queryset(request)
+        qs = super().get_queryset(request)
         return qs.annotate(total_entries=Count("entries"))
 
     def get_urls(self):
         """
         Add the entries view to urls.
         """
-        urls = super(FormAdmin, self).get_urls()
+        urls = super().get_urls()
         extra_urls = [
             re_path(r"^(?P<form_id>\d+)/entries/$",
                 self.admin_site.admin_view(self.entries_view),
@@ -125,7 +124,7 @@ class FormAdmin(admin.ModelAdmin):
         if submitted:
             if export:
                 response = HttpResponse(content_type="text/csv")
-                fname = "%s-%s.csv" % (form.slug, slugify(now().ctime()))
+                fname = "{}-{}.csv".format(form.slug, slugify(now().ctime()))
                 attachment = "attachment; filename=%s" % fname
                 response["Content-Disposition"] = attachment
                 queue = StringIO()
@@ -146,7 +145,7 @@ class FormAdmin(admin.ModelAdmin):
                 return response
             elif XLWT_INSTALLED and export_xls:
                 response = HttpResponse(content_type="application/vnd.ms-excel")
-                fname = "%s-%s.xls" % (form.slug, slugify(now().ctime()))
+                fname = "{}-{}.xls".format(form.slug, slugify(now().ctime()))
                 attachment = "attachment; filename=%s" % fname
                 response["Content-Disposition"] = attachment
                 queue = BytesIO()

@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from future.builtins import int, range, str
 
 from datetime import date, datetime
@@ -146,7 +145,7 @@ class FormForForm(forms.ModelForm):
         if kwargs.get("instance"):
             for field_entry in kwargs["instance"].fields.all():
                 field_entries[field_entry.field_id] = field_entry.value
-        super(FormForForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Create the form fields.
         for field in self.form_fields:
             field_key = field.slug
@@ -224,7 +223,7 @@ class FormForForm(forms.ModelForm):
         Get/create a FormEntry instance and assign submitted values to
         related FieldEntry instances for each form field.
         """
-        entry = super(FormForForm, self).save(commit=False)
+        entry = super().save(commit=False)
         entry.form = self.form
         entry.entry_time = now()
         entry.save()
@@ -285,7 +284,7 @@ class EntriesForm(forms.Form):
         self.form_fields = form.fields.all()
         self.entry_time_name = str(self.formentry_model._meta.get_field(
             "entry_time").verbose_name)
-        super(EntriesForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         for field in self.form_fields:
             field_key = "field_%s" % field.id
             # Checkbox for including in export.

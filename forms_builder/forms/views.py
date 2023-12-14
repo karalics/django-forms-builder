@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import json
 from urllib.parse import quote
 
@@ -27,7 +25,7 @@ class FormDetail(TemplateView):
     template_name = "forms/form_detail.html"
 
     def get_context_data(self, **kwargs):
-        context = super(FormDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         published = Form.objects.published(for_user=self.request.user)
         context["form"] = get_object_or_404(published, slug=kwargs["slug"])
         return context
@@ -80,12 +78,12 @@ class FormDetail(TemplateView):
                 return HttpResponseBadRequest(json_context,
                     content_type="application/json")
             return HttpResponse(json_context, content_type="application/json")
-        return super(FormDetail, self).render_to_response(context, **kwargs)
+        return super().render_to_response(context, **kwargs)
 
     def send_emails(self, request, form_for_form, form, entry, attachments):
         subject = form.email_subject
         if not subject:
-            subject = "%s - %s" % (form.title, entry.entry_time)
+            subject = "{} - {}".format(form.title, entry.entry_time)
         fields = []
         for (k, v) in form_for_form.fields.items():
             value = form_for_form.cleaned_data[k]

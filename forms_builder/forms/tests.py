@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.utils.safestring import SafeText
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
@@ -38,7 +36,7 @@ class Tests(TestCase):
             response = self.client.get(form.get_absolute_url())
             self.assertEqual(response.status_code, 200)
             fields = form.fields.visible()
-            data = dict([(f.slug, "test") for f in fields])
+            data = {f.slug: "test" for f in fields}
             response = self.client.post(form.get_absolute_url(), data=data)
             self.assertEqual(response.status_code, 200)
 
@@ -87,7 +85,7 @@ class Tests(TestCase):
         tag all work.
         """
         form = Form.objects.create(title="Tags", status=STATUS_PUBLISHED)
-        request = type(str(""), (), {"META": {}, "user": AnonymousUser()})()
+        request = type("", (), {"META": {}, "user": AnonymousUser()})()
         context = RequestContext(request, {"form": form})
         template = "{%% load forms_builder_tags %%}{%% render_built_form %s %%}"
         formats = ("form", "form=form", "id=form.id", "slug=form.slug")

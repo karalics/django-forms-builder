@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django import VERSION as DJANGO_VERSION
 from django.contrib.sites.models import Site
 from django.utils.html import format_html_join
@@ -108,7 +106,7 @@ class AbstractForm(models.Model):
         if not self.slug:
             slug = slugify(self)
             self.slug = unique_slug(self.__class__.objects, "slug", slug)
-        super(AbstractForm, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def published(self, for_user=None):
         """
@@ -286,9 +284,9 @@ class Field(AbstractField):
         if not self.slug:
             slug = slugify(self).replace('-', '_')
             self.slug = unique_slug(self.form.fields, "slug", slug)
-        super(Field, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
         fields_after = self.form.fields.filter(order__gte=self.order)
         fields_after.update(order=models.F("order") - 1)
-        super(Field, self).delete(*args, **kwargs)
+        super().delete(*args, **kwargs)
