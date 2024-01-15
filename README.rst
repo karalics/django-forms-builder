@@ -43,7 +43,7 @@ using `pip`_ by running the command below:
 
 .. code-block:: bash
 
-    $ pip install -U django-forms-builder
+    $ pip install django-forms-builder-cod
 
 Otherwise you can download django-forms-builder and install it directly
 from source:
@@ -294,6 +294,10 @@ Download the example from the repository. You can run it with the ``make`` comma
 
 .. code-block:: bash
 
+
+    virtualenv env
+    source env/bin/activate
+    pip install django-forms-builder-cod
     git clone https://github.com/CZ-NIC/django-forms-builder
     make prepare-example
     make run-example
