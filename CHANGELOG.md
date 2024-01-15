@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2024-01-15
+
 ### Added
 
 - MANIFEST.in for build.
@@ -57,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Last commit into the master ar repository https://github.com/stephenmcd/django-forms-builder
 
 
-[Unreleased]: https://github.com/CZ-NIC/django-forms-builder/compare/0.16.0...master
+[Unreleased]: https://github.com/CZ-NIC/django-forms-builder/compare/1.0.0...master
+[1.0.0]: https://github.com/CZ-NIC/django-forms-builder/compare/0.16.0...1.0.0
 [0.16.0]: https://github.com/CZ-NIC/django-forms-builder/compare/0.15.0...0.16.0
 [0.15.0]: https://github.com/CZ-NIC/django-forms-builder/compare/0.8.0...0.15.0
 [0.8.0]: https://github.com/CZ-NIC/django-forms-builder/compare/0.7.15...0.8.0
