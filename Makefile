@@ -19,7 +19,7 @@ run-example:
 	@if [ ! -f example/dev.db ]; then \
 		echo ${INFO_MSG}; \
 	else \
-		cd example && ./manage.py runserver; \
+		cd example && ./manage.py runserver ${RUN_AT}; \
 	fi
 
 run-cmd:

@@ -292,6 +292,9 @@ Run example
 The project includes an example. However, it is located outside the module and is not part of the installation package.
 Download the example from the repository. You can run it with the ``make`` command.
 
+Rn example in virtual env. If you don't have python3 by default, define it in `--python` parameter:
+``virtualenv --python=/usr/bin/python3 env``.
+
 .. code-block:: bash
 
 
@@ -299,8 +302,24 @@ Download the example from the repository. You can run it with the ``make`` comma
     source env/bin/activate
     pip install django-forms-builder-cod
     git clone https://github.com/CZ-NIC/django-forms-builder
+    cd django-forms-builder
     make prepare-example
     make run-example
+
+or you can run the example in the docker:
+
+.. code-block:: bash
+
+    docker run -it -p 8000:8000 ubuntu:jammy
+    apt update
+    apt install --yes pip git
+    pip install django-forms-builder-cod tzdata
+    git clone https://github.com/CZ-NIC/django-forms-builder
+    cd django-forms-builder
+    make prepare-example
+    RUN_AT=0.0.0.0:8000 make run-example
+
+Then enter ``http://localhost:8000/`` in your browser.
 
 
 .. _`pip`: http://www.pip-installer.org/
