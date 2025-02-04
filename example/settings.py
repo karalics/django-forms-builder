@@ -69,6 +69,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.messages',
+    'nested_admin',
     'forms_builder.forms',
 )
 

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ form_instance.title }} - Schritt {{ wizard.steps.step1|add:"1" }}</title>
+</head>
+<body>
+    <h1>{{ form_instance.title }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ form.as_p }}
+        <div>
+            {% if wizard.steps.prev %}
+                <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Zurück</button>
+            {% endif %}
+            <button type="submit">
+                {% if wizard.steps.last %}Absenden{% else %}Weiter{% endif %}
+            </button>
+        </div>
+    </form>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ form_instance.title }} - Schritt {{ wizard.steps.current|add:"1" }}</title>
+</head>
+<body>
+    <h1>{{ form_instance.title }}</h1>
+    <h2>Schritt {{ wizard.steps.current|add:"1" }} von {{ wizard.steps.count }}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ wizard.form.as_p }}
+
+        <div>
+            {% if wizard.steps.prev %}
+                <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}">
+                    Zurueck
+                </button>
+            {% endif %}
+            <button type="submit">
+                {% if wizard.steps.last %}
+                    Formular absenden
+                {% else %}
+                    Weiter
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</body>
+</html>

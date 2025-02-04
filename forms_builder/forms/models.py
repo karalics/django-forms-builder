@@ -41,6 +41,25 @@ class FormManager(models.Manager):
 #                                                                    #
 ######################################################################
 
+class Step(models.Model):
+    form = models.ForeignKey('forms.Form', related_name="steps", on_delete=models.CASCADE)
+    title = models.CharField(_("Title"), max_length=100)
+    slug = models.SlugField(_("Slug"), max_length=100, blank=True, unique=False)
+    order = models.IntegerField(_("Order"), default=0)
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from forms_builder.forms.utils import slugify  # oder eine eigene slugify-Funktion
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
 class AbstractForm(models.Model):
     """A user-built form."""
 
@@ -239,9 +258,8 @@ class Form(AbstractForm):
 
 
 class Field(AbstractField):
-    """Implement automated field ordering."""
-
-    form = models.ForeignKey("Form", related_name="fields", on_delete=models.CASCADE)
+    form = models.ForeignKey(Form, related_name="fields", on_delete=models.CASCADE)
+    step = models.ForeignKey(Step, related_name="fields", on_delete=models.CASCADE, null=True, blank=True)
     order = models.IntegerField(_("Order"), null=True, blank=True)
 
     class Meta(AbstractField.Meta):
@@ -249,13 +267,13 @@ class Field(AbstractField):
 
     def save(self, *args, **kwargs):
         if self.order is None:
-            self.order = self.form.fields.count()
+            self.order = self.form.fields.filter(step=self.step).count()
         if not self.slug:
             slug = slugify(self).replace('-', '_')
             self.slug = unique_slug(self.form.fields, "slug", slug)
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        fields_after = self.form.fields.filter(order__gte=self.order)
+        fields_after = self.form.fields.filter(order__gte=self.order, step=self.step)
         fields_after.update(order=models.F("order") - 1)
         super().delete(*args, **kwargs)
