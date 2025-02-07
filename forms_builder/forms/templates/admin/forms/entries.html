@@ -77,4 +77,11 @@
 {% else %}
 <p class="grp-empty">{% trans "No entries found." %}</p>
 {% endif %}
+    <p>raw json:</p>
+    <ul>
+    {% for entry in entries %}
+        <li>{{ entry.data }}</li>
+    {% endfor %}
+    </ul>
+
 {% endblock %}
