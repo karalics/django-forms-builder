@@ -9,6 +9,8 @@ from forms_builder.forms import urls as form_urls
 admin.autodiscover()
 
 urlpatterns = [
+    path('grappelli/', include('grappelli.urls')),
+    path('nested_admin/', include('nested_admin.urls')), 
     path('admin/', admin.site.urls),
     path('forms/', include(form_urls)),
     path('', lambda request: render(request, "index.html", {"forms": Form.objects.all()})),

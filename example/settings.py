@@ -62,6 +62,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,3 +79,5 @@ FORMS_BUILDER_EXTRA_FIELDS = (
 )
 
 TEMPLATE_DEBUG = DEBUG
+
+NESTED_ADMIN_USE_DJANGO_JQUERY = True
