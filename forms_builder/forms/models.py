@@ -219,7 +219,7 @@ class AbstractField(models.Model):
 class AbstractFormEntry(models.Model):
     """An entry submitted via a user-built form."""
 
-    entry_time = models.DateTimeField(_("Date/time"))
+    entry_time = models.DateTimeField(_("Date/time"), default=now)
 
     class Meta:
         verbose_name = _("Form entry")
@@ -247,6 +247,8 @@ class AbstractFieldEntry(models.Model):
 
 class FormEntry(AbstractFormEntry):
     form = models.ForeignKey("Form", related_name="entries", on_delete=models.CASCADE)
+    data = models.JSONField()  # Store form data as JSON
+    created_at = models.DateTimeField(default=now)
 
 
 class FieldEntry(AbstractFieldEntry):

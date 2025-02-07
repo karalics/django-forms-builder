@@ -12,6 +12,7 @@ __all__ = ["form_sent", "MultiStepFormWizard", "form_detail"]
 
 from django import forms
 from forms_builder.forms.fields import SELECT
+from forms_builder.forms.models import Form, FormEntry
 
 def convert_to_django_field(field_instance):
     if field_instance.field_type == SELECT:
@@ -118,6 +119,8 @@ class MultiStepFormWizard(SessionWizardView):
         combined_data = {}
         for form in form_list:
             combined_data.update(form.cleaned_data)
+        form_entry = FormEntry(form=self.form_instance, data=combined_data)
+        form_entry.save()
         return redirect(reverse("form_sent", kwargs={"slug": self.form_instance.slug}))
 
 class FormDetail(TemplateView):
