@@ -77,7 +77,7 @@
 </head>
 <body>
   <div class="form-container">
-    <h1>{{ form_instance.title }}{{ wizard.steps.current }}</h1>
+    <h1>{{ form_instance.title }} - {{ wizard.steps.current }}</h1>
     <h2>Schritt {{ step_index }} von {{ step_total }}</h2>
     <form method="post">
       {% csrf_token %}
