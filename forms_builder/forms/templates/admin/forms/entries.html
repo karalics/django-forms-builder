@@ -1,5 +1,4 @@
 {% extends "admin/base_site.html" %}
-
 {% load i18n %}
 
 {% block extrahead %}
@@ -10,8 +9,9 @@
 #content-main label {cursor:pointer;}
 h1 {margin-top:20px;}
 #content-main h1 {margin:30px 0 0 0;}
-table {border:1px solid #ddd; width:100%;}
-th, td {border-right:1px solid #ddd; padding:5px 15px;}
+table {border:2px solid #ddd; width:100%;}
+thead {background:#f0f0f0;}
+th, td {border:1px solid #ddd; padding:5px 15px;}
 .last {border-right:0;}
 td.include, th.include-all, td.include-all {text-align:center; width:10px;}
 .empty {margin-top:10px;}
@@ -81,87 +81,28 @@ $(function() {
 
 {% block content %}
 <div id="content-main">
-    <form method="post">
-    {% csrf_token %}
+    <h1>{% trans "Entries for" %} {{ original.title }}</h1>
+    {% if entries %}
     <table>
-        <tr>
-            <th>{% trans "Field" %}</th>
-            <th>{% trans "Include" %}</th>
-            <th class="last" colspan="2">{% trans "Filter by" %}</th>
-        </tr>
-        {% for include_field, filter_field, filter_option_fields in entries_form %}
-        <tr class="{% cycle "on" "off" as row %}">
-            <td class="field">{{ include_field.label_tag }}</td>
-            <td class="include">{{ include_field }}</td>
-            <td class="filter last">{{ filter_field }}</td>
-            <td class="options last">
-                <div class="options-div">
-                    {% for option_field in filter_option_fields %}
-                    {{ option_field.label_tag }} {{ option_field }}
-                    {% endfor %}
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
-        <tr class="{% cycle row %}">
-            <td class="field" style="text-align:right;">
-                <label for="include-all">{% trans "All" %}</label>
-            </td>
-            <td class="include-all">
-                <input type="checkbox" id="include-all" class="include-all" checked="checked">
-            </td>
-            <td class="last" colspan="2">&nbsp;</td>
-        </tr>
-    </table>
-    <input type="submit" name="back" class="button" value="{% trans "Back to form" %}">
-    <input type="submit" class="button default" value="{% trans "View entries" %}">
-    <input type="submit" class="button default" name="export" value="{% trans "Export CSV" %}">
-    {% if xlwt_installed %}
-    <input type="submit" class="button default" name="export_xls" value="{% trans "Export XLS" %}">
-    {% endif %}
-    {% if submitted %}
-    <br clear="both" />
-    <h1 id="entries-title">{% trans "Entries" %}</h1>
-    {% for row in entries_form.rows %}
-    {% if forloop.first %}
-    <table id="entries-table">
-        <tr>
-            {% if can_delete_entries %}
-            <th class="include-all"><input type="checkbox"></th>
-            {% endif %}
-            {% for column in entries_form.columns %}
-            <th{% if forloop.last %} class="last"{% endif %}>{{ column }}</th>
+        <thead>
+            <tr>
+                {% for key in entries.0.data.keys %}
+                <th>{{ key }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in entries %}
+            <tr>
+                {% for value in entry.data.values %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-    {% endif %}
-        <tr class="{% cycle "on" "off" %}">
-            {% if can_delete_entries %}
-            <td class="include">
-                <input type="checkbox" name="selected" value="{{ row.0 }}">
-            </td>
-            {% endif %}
-            {% for field in row %}
-            {% if not forloop.first %}
-            <td{% if forloop.last %} class="last"{% endif %}>{{ field }}</td>
-            {% endif %}
-            {% endfor %}
-        </tr>
-    {% if forloop.last %}
+        </tbody>
     </table>
-    <!--
-    count is injected into the title here with the :after selector
-    to avoid calling the expensive "entries_form.rows" twice.
-    -->
-    <style>#entries-title:after {content: ' ({{ forloop.counter }})';}</style>
-    {% if can_delete_entries %}
-    <input type="submit" name="back" class="button" value="{% trans "Back to form" %}">
-    <input type="submit" name="delete" class="button default" value="{% trans "Delete selected" %}">
+    {% else %}
+    <p class="empty">{% trans "No entries found." %}</p>
     {% endif %}
-    {% endif %}
-    {% empty %}
-    <p class="empty">{% trans "No entries to display" %}</p>
-    {% endfor %}
-    {% endif %}
-    </form>
 </div>
 {% endblock %}

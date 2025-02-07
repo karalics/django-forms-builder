@@ -59,7 +59,8 @@ class FormAdmin(nested_admin.NestedModelAdmin):
             change_url = reverse("admin:%s_%s_change" % bits, args=(form_id,))
             return HttpResponseRedirect(change_url)
         form = get_object_or_404(self.model, id=form_id)
-        context = {"original": form}
+        entries = FormEntry.objects.filter(form=form)
+        context = {"original": form, "entries": entries}
         return render(request, "admin/forms/entries.html", context)
 
     def file_view(self, request, field_entry_id):
