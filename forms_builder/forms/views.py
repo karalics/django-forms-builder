@@ -5,15 +5,30 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 from formtools.wizard.views import SessionWizardView
 from forms_builder.forms.models import Form
+from forms_builder.forms.fields import SELECT
 from .models import Step
 
 __all__ = ["form_sent", "MultiStepFormWizard", "form_detail"]
 
+from django import forms
+from forms_builder.forms.fields import SELECT
+
 def convert_to_django_field(field_instance):
-    # Beispielhafte Konvertierung – hier anpassen!
-    if field_instance.field_type == 1:  # TEXT
+    if field_instance.field_type == SELECT:
+        # Nutze die get_choices()-Methode des Feldes, die die Optionen als Tupel liefert
+        choices = list(field_instance.get_choices())
+        # Falls keine Optionen vorhanden sind, setze eine leere Liste
+        if not choices:
+            choices = [("", "Bitte waehlen")]
+        return forms.ChoiceField(
+            label=field_instance.label,
+            required=field_instance.required,
+            choices=choices,
+        )
+    elif field_instance.field_type == 1:  # TEXT
         return forms.CharField(label=field_instance.label, required=field_instance.required)
-    return forms.CharField(label=field_instance.label, required=field_instance.required)
+    else:
+        return forms.CharField(label=field_instance.label, required=field_instance.required)
 
 class MultiStepFormWizard(SessionWizardView):
     template_name = "forms/multistep_form.html"

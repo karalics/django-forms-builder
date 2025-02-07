@@ -1,33 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ form_instance.title }} - {{ wizard.steps.current }}</title>
+  <meta charset="utf-8">
+  <title>{{ form_instance.title }} – Schritt {{ wizard.steps.current|add:"1" }} von {{ wizard.steps.count }}</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1em 2em;
+      background: #f8f8f8;
+    }
+    .form-container {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 1.5em;
+      max-width: 600px;
+      margin: auto;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .form-container form {
+      margin: 0;
+    }
+    .form-container h1,
+    .form-container h2 {
+      text-align: center;
+    }
+    .form-container p {
+      margin-bottom: 1em;
+    }
+    .form-container label {
+      display: block;
+      margin-bottom: 0.5em;
+      font-weight: bold;
+    }
+    .form-container input[type="text"],
+    .form-container input[type="email"],
+    .form-container input[type="number"],
+    .form-container textarea,
+    .form-container select {
+      width: 100%;
+      padding: 0.6em;
+      margin-bottom: 1em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+    .form-container select {
+      background: #fff url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path fill='%23999' d='M6 9l4-5H2z'/></svg>") no-repeat right 0.8em center;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    .form-container .errorlist {
+      color: #d00;
+      list-style: none;
+      padding-left: 0;
+    }
+    .form-container button {
+      background-color: #007bff;
+      color: #fff;
+      padding: 0.6em 1.2em;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    .form-container button:hover {
+      background-color: #0056b3;
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="form-container">
     <h1>{{ form_instance.title }}</h1>
     <h2>Schritt {{ wizard.steps.current|add:"1" }} von {{ wizard.steps.count }}</h2>
-
     <form method="post">
-        {% csrf_token %}
-        {{ wizard.management_form }}
-        {{ wizard.form.as_p }}
+      {% csrf_token %}
+      {{ wizard.management_form }}
+      {{ wizard.form.as_p }}
 
-        <div>
-            {% if wizard.steps.prev %}
-                <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}">
-                    Zurueck
-                </button>
-            {% endif %}
-            <button type="submit">
-                {% if wizard.steps.last %}
-                    Formular absenden
-                {% else %}
-                    Weiter
-                {% endif %}
-            </button>
-        </div>
+      <div class="button-group">
+        {% if wizard.steps.prev %}
+          <button type="submit" name="wizard_goto_step" value="{{ wizard.steps.prev }}">Zurück</button>
+        {% else %}
+          <span></span>
+        {% endif %}
+        <button type="submit">
+          {% if wizard.steps.last %}
+            Formular absenden
+          {% else %}
+            Weiter
+          {% endif %}
+        </button>
+      </div>
     </form>
+  </div>
 </body>
 </html>
