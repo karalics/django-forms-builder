@@ -112,7 +112,17 @@ class MultiStepFormWizard(SessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
-        context.update({"form_instance": self.form_instance})
+        # Berechne die Liste der Schritt-Schlüssel (die Keys, die Du in get_form_list erzeugst)
+        steps_keys = list(self.form_list.keys())
+        # Der aktuelle Schritt wird als string in self.steps.current geliefert
+        current_key = self.steps.current
+        try:
+            index = steps_keys.index(current_key)
+        except ValueError:
+            index = 0
+        context["step_index"] = index + 1  # 1-basierter Index
+        context["step_total"] = len(steps_keys)
+        context["form_instance"] = self.form_instance
         return context
 
     def done(self, form_list, **kwargs):
