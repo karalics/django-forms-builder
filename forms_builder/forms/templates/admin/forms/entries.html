@@ -1,5 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load i18n %}
+{% load custom_filters %}
 
 {% block extrahead %}
 {{ block.super }}
@@ -54,7 +55,7 @@
             <th class="action-checkbox-column"><input type="checkbox" id="action-toggle"></th>
             <th>{% trans "ID" %}</th>
             <th>{% trans "Status" %}</th>
-            {% for key in entries.0.data.keys %}
+            {% for key in all_keys %}
             <th>{{ key }}</th>
             {% endfor %}
             <th>{% trans "Created At" %}</th>
@@ -66,8 +67,8 @@
             <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="{{ entry.id }}"></td>
             <td>{{ entry.id }}</td>
             <td>{{ entry.status }}</td>
-            {% for value in entry.data.values %}
-            <td>{{ value }}</td>
+            {% for key in all_keys %}
+            <td>{{ entry.data|get_item:key }}</td>
             {% endfor %}
             <td>{{ entry.created_at }}</td>
         </tr>
@@ -77,11 +78,4 @@
 {% else %}
 <p class="grp-empty">{% trans "No entries found." %}</p>
 {% endif %}
-    <p>raw json:</p>
-    <ul>
-    {% for entry in entries %}
-        <li>{{ entry.data }}</li>
-    {% endfor %}
-    </ul>
-
 {% endblock %}

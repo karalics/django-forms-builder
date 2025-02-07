@@ -53,7 +53,6 @@ class FormAdmin(nested_admin.NestedModelAdmin):
         ]
         return extra_urls + urls
 
-
     def entries_view(self, request, form_id, show=False, export=False,
                      export_xls=False):
         form = get_object_or_404(self.model, id=form_id)
@@ -67,9 +66,15 @@ class FormAdmin(nested_admin.NestedModelAdmin):
         if end_date:
             entries = entries.filter(created_at__lte=parse_date(end_date))
 
+        # Collect all unique keys from entries' data
+        all_keys = set()
+        for entry in entries:
+            all_keys.update(entry.data.keys())
+
         context = {
             "original": form,
             "entries": entries,
+            "all_keys": sorted(all_keys),  # Sort keys for consistent order
         }
         return render(request, "admin/forms/entries.html", context)
 
