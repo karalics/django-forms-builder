@@ -4,6 +4,7 @@ from django.db.models import Count
 from django.urls import path, reverse
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.utils.dateparse import parse_date
 from django.utils.translation import gettext_lazy as _
 from forms_builder.forms.models import Form, Field, FormEntry  # und ggf. FieldEntry
 from forms_builder.forms.settings import EDITABLE_SLUGS, USE_SITES
@@ -52,16 +53,26 @@ class FormAdmin(nested_admin.NestedModelAdmin):
         ]
         return extra_urls + urls
 
-    def entries_view(self, request, form_id, show=False, export=False, export_xls=False):
-        # Deine Logik zum Anzeigen der Einträge
-        if request.POST.get("back"):
-            bits = (self.model._meta.app_label, self.model.__name__.lower())
-            change_url = reverse("admin:%s_%s_change" % bits, args=(form_id,))
-            return HttpResponseRedirect(change_url)
+
+    def entries_view(self, request, form_id, show=False, export=False,
+                     export_xls=False):
         form = get_object_or_404(self.model, id=form_id)
         entries = FormEntry.objects.filter(form=form)
-        context = {"original": form, "entries": entries}
+
+        # Filter by date range if provided
+        start_date = request.GET.get("start_date")
+        end_date = request.GET.get("end_date")
+        if start_date:
+            entries = entries.filter(created_at__gte=parse_date(start_date))
+        if end_date:
+            entries = entries.filter(created_at__lte=parse_date(end_date))
+
+        context = {
+            "original": form,
+            "entries": entries,
+        }
         return render(request, "admin/forms/entries.html", context)
+
 
     def file_view(self, request, field_entry_id):
         # Beispielhafte Implementierung zum Ausliefern der Datei

@@ -246,8 +246,15 @@ class AbstractFieldEntry(models.Model):
 ###################################################
 
 class FormEntry(AbstractFormEntry):
+    STATUS_CHOICES = [
+        ('neu', 'Neu'),
+        ('eingeplant', 'Eingeplant'),
+        ('in_bearbeitung', 'In Bearbeitung'),
+        ('abgeschlossen', 'Abgeschlossen'),
+    ]
     form = models.ForeignKey("Form", related_name="entries", on_delete=models.CASCADE)
     data = models.JSONField()  # Store form data as JSON
+    status = models.CharField("Status", max_length=20, choices=STATUS_CHOICES, default='neu')
     created_at = models.DateTimeField(default=now)
 
 
