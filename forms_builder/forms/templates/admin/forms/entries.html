@@ -10,7 +10,20 @@
     .grp-filter { margin-bottom: 20px; }
     .grp-filter label { margin-right: 10px; }
     .grp-filter input { margin-right: 10px; }
+    .grp-empty { text-align: center; padding: 20px; }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const actionToggle = document.getElementById('action-toggle');
+        const checkboxes = document.querySelectorAll('input[name="_selected_action"]');
+
+        actionToggle.addEventListener('change', function() {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = actionToggle.checked;
+            });
+        });
+    });
+</script>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -38,6 +51,7 @@
 <table class="grp-table">
     <thead>
         <tr>
+            <th class="action-checkbox-column"><input type="checkbox" id="action-toggle"></th>
             <th>{% trans "ID" %}</th>
             <th>{% trans "Status" %}</th>
             {% for key in entries.0.data.keys %}
@@ -49,6 +63,7 @@
     <tbody>
         {% for entry in entries %}
         <tr>
+            <td class="action-checkbox"><input type="checkbox" name="_selected_action" value="{{ entry.id }}"></td>
             <td>{{ entry.id }}</td>
             <td>{{ entry.status }}</td>
             {% for value in entry.data.values %}
